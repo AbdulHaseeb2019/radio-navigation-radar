@@ -1,0 +1,12 @@
+# MATLAB
+*.asv
+*.mex*
+*.mat
+*.fig
+*.slxc
+*.autosave
+
+# Large data files
+*.h5
+*.zip
+*.pdf

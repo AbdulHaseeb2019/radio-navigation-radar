@@ -1,0 +1,19 @@
+scenario1	10m^2 triangular trihedral at 10m range, K-LC2 sensor
+scenario2       10m^2 triangular trihedral at 15m range, K-LC2 sensor
+scenario3       10m^2 triangular trihedral at 20m range, K-LC2 sensor
+scenario4       10m^2 triangular trihedral at 25m range, K-LC2 sensor
+scenario5       10m^2 triangular trihedral walking around, K-LC2 sensor
+scenario6       1m^2 triangular trihedral at 10m range, K-LC2 sensor
+scenario7       house at 22.8m range, K-LC2 sensor
+scenario8       house at 22.8m range, K-MC1 sensor
+scenario9       1m^2 triangular trihedral at 10m range, K-MC1 sensor
+scenario10      10m^2 triangular trihedral at 10m range, K-MC1 sensor
+scenario11      10m^2 triangular trihedral at 15m range, K-MC1 sensor
+scenario12      10m^2 triangular trihedral at 20m range, K-MC1 sensor
+scenario13      10m^2 triangular trihedral at 25m range, K-MC1 sensor
+scenario14      10m^2 triangular trihedral walking around, K-MC1 sensor
+scenario15      10m^2 triangular trihedral walking around, K-MC1 sensor
+scenario16      10m^2 triangular trihedral walking around, K-MC1 sensor
+scenario17      10m^2 triangular trihedral walking around, K-MC1 sensor
+scenario18      10m^2 triangular trihedral walking around, K-MC1 sensor
+scenario19      10m^2 triangular trihedral walking around, K-MC1 sensor
