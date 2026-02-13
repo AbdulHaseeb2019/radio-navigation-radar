@@ -54,6 +54,15 @@ To mitigate this effect, a **Hann window** is applied.
 
 ---
 
+## 📈 Results
+
+The magnitude-squared spectra of both the down-chirp and up-chirp signals are shown below.  
+A Hann window (oversampling ratio = 2) was applied prior to spectral analysis in order to suppress leakage from strong low-frequency components.
+
+![FMCW Radar Spectrum](Results.png)
+
+*Figure 1: Exemplary spectra of one down-chirp and one up-chirp. The peak indicate the detected target.*
+
 ### Properties of the Hann Window
 
 The Hann window:
