@@ -80,16 +80,17 @@ Measurement equation:
 
 ## 🔁 Kalman Filter Implementation
 
-The Kalman filter step is executed once per iteration:
+The Kalman filter is executed once per iteration (one update per up-chirp/down-chirp measurement pair).
 
-1. **Prediction**
-   - Predict state \(\hat{\mathbf{x}}_{k|k-1}\)
-   - Predict covariance \(\mathbf{P}_{k|k-1}\)
+### 1) Prediction
+- x_pred = F * x_prev
+- P_pred = F * P_prev * F' + Q
 
-2. **Update (Correction)**
-   - Compute Kalman gain \(\mathbf{K}_k\)
-   - Update state \(\hat{\mathbf{x}}_{k|k}\)
-   - Update covariance \(\mathbf{P}_{k|k}\)
+### 2) Update
+- K = P_pred * H' * inv(H * P_pred * H' + R)
+- x_est = x_pred + K * (z - H * x_pred)
+- P = (I - K * H) * P_pred
+
 
 ---
 
