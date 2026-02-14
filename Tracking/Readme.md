@@ -33,21 +33,23 @@ where:
 
 ## 🚶 Kinematic Model (Process Model)
 
-A **piecewise constant acceleration** assumption is used.
+A piecewise constant acceleration assumption is used.
 
-This is commonly modeled as a constant-velocity transition with acceleration treated as process noise:
+In discrete-time form, the state transition model is written as:
 
-\[
-\mathbf{x}_{k+1} = \mathbf{F}\mathbf{x}_k + \mathbf{w}_k
-\]
+x_{k+1} = F x_k + w_k
 
-- \(\mathbf{F}\) is the state transition matrix
-- \(\mathbf{w}_k\) is process noise representing unmodeled acceleration
+where:
 
-The assumed **typical pedestrian acceleration** directly influences the process noise covariance \(\mathbf{Q}\):
+- F is the state transition matrix  
+- w_k is zero-mean process noise representing unmodeled acceleration  
 
-- **Higher assumed acceleration** → larger \(\mathbf{Q}\) → filter reacts faster but is noisier
-- **Lower assumed acceleration** → smaller \(\mathbf{Q}\) → smoother tracking but may lag behind maneuvers
+Since acceleration is not explicitly part of the state vector, it is modeled through the process noise covariance matrix Q.
+
+The assumed typical pedestrian acceleration directly influences Q:
+
+- Higher assumed acceleration → larger Q → filter reacts faster but becomes noisier  
+- Lower assumed acceleration → smaller Q → smoother tracking but may lag behind rapid motion changes  
 
 ---
 
