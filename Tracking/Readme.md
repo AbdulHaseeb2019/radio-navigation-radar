@@ -1,96 +1,110 @@
-# 🎯 FMCW Radar Target Tracking – Kalman Filter (Range & Radial Velocity)
+# 🎯 FMCW Radar Target Tracking – Kalman Filter
 
-This module implements a **Hidden Markov Model (state-space model)** and a **Kalman filter** to track a pedestrian using measurements from an **FMCW radar**.
+This module implements range–velocity tracking of a pedestrian using a discrete-time Kalman filter.
 
-The tracked state consists of **range** and **radial velocity**, while the observations are the detected **frequency shifts** from the **down-chirp** and **up-chirp**.
-
----
-
-## 🎯 Objective
-
-- Design a **kinematic model** (state transition + process noise covariance)
-- Design a **measurement model** (observation matrix + observation noise covariance)
-- Implement a full **Kalman filter loop** (prediction + update) in MATLAB
-- Evaluate how assumed **typical pedestrian acceleration** affects tracking quality
+The state-space model is derived from FMCW radar measurement equations and a constant-velocity motion assumption.
 
 ---
 
-## 🧩 State-Space Model
+## 🧩 State Vector
 
-### State Vector
+The state consists of:
 
-The state captures the target’s motion along the radar line-of-sight:
-
-\[
-\mathbf{x}_k = \begin{bmatrix} r_k \\ v_k \end{bmatrix}
-\]
+x = [ r
+      v ]
 
 where:
-- \(r_k\) is the range (m)
-- \(v_k\) is the radial velocity (m/s)
+- r = range (m)
+- v = radial velocity (m/s)
 
 ---
 
 ## 🚶 Kinematic Model (Process Model)
 
-A piecewise constant acceleration assumption is used.
+A constant-velocity model is assumed, with acceleration modeled as process noise.
 
-In discrete-time form, the state transition model is written as:
+Discrete-time state transition:
 
 x_{k+1} = F x_k + w_k
 
-where:
+State transition matrix:
 
-- F is the state transition matrix  
-- w_k is zero-mean process noise representing unmodeled acceleration  
+F = [1  t
+     0  1]
 
-Since acceleration is not explicitly part of the state vector, it is modeled through the process noise covariance matrix Q.
+Acceleration is not explicitly included in the state.  
+Instead, it is modeled as zero-mean white noise with variance σ_a².
 
-The assumed typical pedestrian acceleration directly influences Q:
+The resulting process noise covariance:
 
-- Higher assumed acceleration → larger Q → filter reacts faster but becomes noisier  
-- Lower assumed acceleration → smaller Q → smoother tracking but may lag behind rapid motion changes  
+Q = σ_a² * [ t^4/4   t^3/2
+             t^3/2   t^2 ]
+
+This corresponds to the standard continuous white acceleration model.
+
+### Effect of σ_a (Acceleration Assumption)
+
+- Larger σ_a → larger Q → faster response to motion changes, but noisier estimates  
+- Smaller σ_a → smoother estimates, but increased lag during maneuvers  
+
+In this implementation, σ_a is treated as a tuning parameter.
 
 ---
 
-## 📡 Measurement Model (Observation Model)
+## 📡 Measurement Model
 
-Each iteration uses frequency shift measurements from:
-- one **down-chirp**
-- one **up-chirp**
+The measurement vector consists of frequency shifts from:
 
-Observation vector:
+- one down-chirp
+- one up-chirp
 
-\[
-\mathbf{z}_k = \begin{bmatrix} f_{\text{down},k} \\ f_{\text{up},k} \end{bmatrix}
-\]
+z = [ f_down
+      f_up ]
 
-Measurement equation:
+The observation equation:
 
-\[
-\mathbf{z}_k = \mathbf{H}\mathbf{x}_k + \mathbf{v}_k
-\]
+z = H x + v
 
-- \(\mathbf{H}\) maps range/velocity to the measured chirp frequency shifts
-- \(\mathbf{v}_k\) is observation noise with covariance \(\mathbf{R}\)
+Observation matrix:
 
-**Observation noise variance is assumed inversely proportional to measurement duration**, i.e. longer integration time improves frequency estimation quality.
+H = [  2k/c0   -2f0/c0
+      -2k/c0   -2f0/c0 ]
+
+where:
+- k = FMCW sweep rate
+- f0 = carrier frequency
+- c0 = speed of light
+
+---
+
+## 🔊 Measurement Noise
+
+Measurement noise covariance:
+
+R = diag([1/T², 1/T²])
+
+where T is the measurement duration.
+
+Thus, longer integration time reduces frequency estimation variance.
 
 ---
 
 ## 🔁 Kalman Filter Implementation
 
-The Kalman filter is executed once per iteration (one update per up-chirp/down-chirp measurement pair).
+For each iteration:
 
 ### 1) Prediction
-- x_pred = F * x_prev
-- P_pred = F * P_prev * F' + Q
+
+x_pred = F * x_prev  
+P_pred = F * P_prev * F' + Q  
 
 ### 2) Update
-- K = P_pred * H' * inv(H * P_pred * H' + R)
-- x_est = x_pred + K * (z - H * x_pred)
-- P = (I - K * H) * P_pred
 
+K = P_pred * H' * inv(H * P_pred * H' + R)  
+x_est = x_pred + K * (z - H * x_pred)  
+P = (I - K * H) * P_pred  
+
+The updated state becomes the prediction for the next iteration.
 
 ---
 
@@ -104,13 +118,26 @@ The Kalman filter is executed once per iteration (one update per up-chirp/down-c
   <em>Figure 1: Exemplary trajectories without and with tracking.</em>
 </p>
 
-The Kalman filter reduces measurement noise and stabilizes the estimated trajectory compared to raw (unfiltered) detections.
+The Kalman filter significantly reduces noise in the range and velocity estimates and provides a smooth, physically consistent trajectory compared to raw frequency-based estimates.
 
 ---
 
 ## ▶ How to Run
 
-Run the main script:
+Run:
 
-```matlab
 tracking
+
+Tested with:
+- scenario15.h5
+
+---
+
+## 📚 Concepts Demonstrated
+
+- State-space modeling
+- Continuous white acceleration process model
+- FMCW measurement linearization
+- Kalman filtering
+- Noise covariance tuning
+- Radar-based target tracking
